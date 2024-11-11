@@ -1,0 +1,20 @@
+.{
+    .name = "firmware/blink",
+    .version = "0.0.0",
+    .dependencies = .{
+        .@"microzig/build" = .{  
+            .url = "git+https://github.com/ZigEmbeddedGroup/microzig.git#d6a97c9476c3377877946873cad040f769e42698",
+            .hash = "12204ade9b0ef08b6787667a99396aa1e89e8a6dca1e25b62b9490e3ab8394a0383c" },
+        .@"microzig/port/espressif/esp" = .{ 
+            .url = "git+https://github.com/ZigEmbeddedGroup/microzig.git#d6a97c9476c3377877946873cad040f769e42698",
+            .hash = "12204ade9b0ef08b6787667a99396aa1e89e8a6dca1e25b62b9490e3ab8394a0383c" },
+    },
+
+    .paths = .{
+        "LICENSE",
+        "README.md",
+        "build.zig",
+        "build.zig.zon",
+        "src",
+    },
+}
