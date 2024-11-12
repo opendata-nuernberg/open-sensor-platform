@@ -1,0 +1,6 @@
+build
+.zig-cache
+
+dependencies.lock
+!sdkconfig.defaults
+sdkconfig*
