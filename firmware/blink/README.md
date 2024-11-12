@@ -28,7 +28,7 @@ If all is configured correctly, the resulting binary can be found in the folder 
 
 In case of errors, make sure to have installed all the requirements and have run `export.bat` form the esp-idf in your current shell.
 
-== Flashing the binary to the device
+## Flashing the binary to the device
 
 Connect the ESP32 device to you USB port.
 
