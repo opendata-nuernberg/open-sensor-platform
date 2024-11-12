@@ -4,7 +4,7 @@ Use the DevContainer provided in the root of the repository or install the requi
 
 ## Requirements
 
-Make sure to have the https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/index.html[esp-idf installed]:
+Make sure to have the [esp-idf installed](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/index.html):
 
 1. Clone the repository: `git clone -b v5.3.1 --recursive https://github.com/espressif/esp-idf.git`
 2. Run the install script: `install.ps1|sh|fish|bat`
