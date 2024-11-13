@@ -2,3 +2,6 @@
 zig-out/
 
 build
+dependencies.lock
+!sdkconfig.defaults
+sdkconfig*
