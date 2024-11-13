@@ -34,33 +34,19 @@ pub fn main() !void {
         .drive_strength = gpio.DriveStrength.@"40mA",
     };
 
-    const led_r_pin = gpio.instance.GPIO3;
-    const led_g_pin = gpio.instance.GPIO4;
-    const led_b_pin = gpio.instance.GPIO5;
+    const led_r_pin = gpio.instance.GPIO0;
 
     led_r_pin.apply(pin_config);
-    led_g_pin.apply(pin_config);
-    led_b_pin.apply(pin_config);
 
     uart.write(0, "Hello from Zig!\r\n");
 
     while (true) {
         led_r_pin.write(gpio.Level.high);
-        led_g_pin.write(gpio.Level.low);
-        led_b_pin.write(gpio.Level.low);
-        uart.write(0, "R");
-        microzig.core.experimental.debug.busy_sleep(100_000);
+        uart.write(1, "On");
+        microzig.core.experimental.debug.busy_sleep(300_000);
 
-        led_r_pin.write(gpio.Level.low);
-        led_g_pin.write(gpio.Level.high);
-        led_b_pin.write(gpio.Level.low);
-        uart.write(0, "G");
-        microzig.core.experimental.debug.busy_sleep(100_000);
-
-        led_r_pin.write(gpio.Level.low);
-        led_g_pin.write(gpio.Level.low);
-        led_b_pin.write(gpio.Level.high);
-        uart.write(0, "B");
-        microzig.core.experimental.debug.busy_sleep(100_000);
+        led_r_pin.write(gpio.Level.high);
+        uart.write(0, "Off");
+        microzig.core.experimental.debug.busy_sleep(300_000);
     }
 }
