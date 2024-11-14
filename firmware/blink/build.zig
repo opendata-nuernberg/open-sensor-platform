@@ -570,6 +570,10 @@ pub fn idf_wrapped_modules(b: *std.Build) *std.Build.Module {
                 .name = "pulse",
                 .module = pcnt,
             },
+            .{
+                .name = "sys",
+                .module = sys,
+            },
         },
     });
 }
