@@ -1,6 +1,7 @@
 const std = @import("std");
 const builtin = @import("builtin");
 const idf = @import("esp_idf");
+const OnboardLed = @import("onboard_led.zig").OnboardLed;
 
 export fn app_main() callconv(.C) void {
     // This allocator is safe to use as the backing allocator w/ arena allocator
@@ -79,18 +80,18 @@ export fn app_main() callconv(.C) void {
 
 // comptime function
 fn blinkLED(delay_ms: u32) !void {
-    try idf.gpio.Direction.set(
-        .GPIO_NUM_0,
-        .GPIO_MODE_OUTPUT,
-    );
+    const led = OnboardLed{};
+
+    try led.init();
+
     while (true) {
         log.info("LED: ON", .{});
-        try idf.gpio.Level.set(.GPIO_NUM_0, 1);
+        try led.on();
 
         idf.vTaskDelay(delay_ms / idf.portTICK_PERIOD_MS);
 
         log.info("LED: OFF", .{});
-        try idf.gpio.Level.set(.GPIO_NUM_0, 0);
+        try led.off();
 
         idf.vTaskDelay(delay_ms / idf.portTICK_PERIOD_MS);
     }
