@@ -12,6 +12,7 @@ RUN apt-get update \
   libglib2.0-0 \
   libnuma1 \
   libpixman-1-0 \
+  udev \
   && rm -rf /var/lib/apt/lists/*
 
 # QEMU
@@ -26,6 +27,11 @@ ENV ZIG_SHA256=ad94656b00dc45fb098a7cf3dc03696bf016da76791eee32b2cdd500035c85a9
 ENV ZIG_DIST=${ZIG_REL}.tar.xz
 ENV ZIG_URL=https://github.com/kassane/zig-espressif-bootstrap/releases/download/0.14.0-xtensa-dev/${ZIG_DIST}
 
+# ZLS v0.13.0
+ENV ZLS_REL=zls-x86_64-linux
+ENV ZLS_DIST=${ZLS_REL}.tar.xz
+ENV ZLS_URL=https://github.com/zigtools/zls/releases/download/0.13.0/${ZLS_DIST}
+
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 
@@ -39,7 +45,12 @@ RUN wget --no-verbose ${ZIG_URL} \
   && tar -xf $ZIG_DIST -C /opt \
   && rm ${ZIG_DIST}
 
-ENV PATH=/opt/qemu/bin:/opt/${ZIG_REL}:${PATH}
+RUN wget --no-verbose ${ZLS_URL} \
+  && mkdir -p /opt/zls \
+  && tar -xf $ZLS_DIST -C /opt/zls \
+  && rm ${ZLS_DIST}
+
+ENV PATH=/opt/qemu/bin:/opt/${ZIG_REL}:/opt/zls:${PATH}
 
 RUN groupadd --gid $USER_GID $CONTAINER_USER \
   && adduser --uid $USER_UID --gid $USER_GID --disabled-password --gecos "" ${CONTAINER_USER} \
