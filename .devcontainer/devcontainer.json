@@ -3,6 +3,10 @@
 	"build": {
 		"dockerfile": "Dockerfile"
 	},
+	"mounts": [
+		// Unfortunately this mount only works for linux users:
+		"source=/dev/bus/usb,target=/dev/bus/usb,type=bind,consistency=cached"
+	],
 	"customizations": {
 		"vscode": {
 			"settings": {
