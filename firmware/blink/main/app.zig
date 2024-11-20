@@ -173,9 +173,9 @@ export fn sht4x_task(_: ?*anyopaque) void {
             idf.vTaskDelay(1000 / idf.portTICK_PERIOD_MS);
 
             var data_write: [20:0]u8 = undefined;
-            data_write[0] = 0x89;
+            data_write[0] = 0xFD;
             //const data_write_ptr = @as([*:0]const u8, &data_write);
-            const ret_w: idf.sys.esp_err_t = idf.sys.i2c_master_transmit(i2c_device_handle, "‰", 1, 100);
+            const ret_w: idf.sys.esp_err_t = idf.sys.i2c_master_transmit(i2c_device_handle, &data_write, 1, 100);
             idf.vTaskDelay(1000 / idf.portTICK_PERIOD_MS);
 
             if (ret_w != idf.sys.esp_err_t.ESP_OK) {
@@ -186,12 +186,21 @@ export fn sht4x_task(_: ?*anyopaque) void {
 
             idf.vTaskDelay(1000 / idf.portTICK_PERIOD_MS);
 
-            const ret: idf.sys.esp_err_t = idf.sys.i2c_master_receive(i2c_device_handle, data_rd, 6, 100);
+            const ret: idf.sys.esp_err_t = idf.sys.i2c_master_receive(i2c_device_handle, data_rd, DATA_LENGTH, 100);
 
             if (ret != idf.sys.esp_err_t.ESP_OK) {
                 log.err("Error while reading from i2c: {x}", .{@intFromEnum(ret)});
             } else {
                 log.info("Read value: {x}", .{data_rd});
+
+                const st: u16 = (@as(u16, data[0]) << 8) | data[1];
+                const temperature = (175 * (@as(f32, @floatFromInt(st)) / 65535)) - 45;
+
+                log.info("Temperature: {d} °C", .{temperature});
+
+                //const srh: f32 = (@as(u16, data[3]) << 8) | data[4];
+                //const relative_humidity = (125 * (@as(f32, @floatFromInt(srh)) / 65535)) - 6;
+                //log.info("Rel. humidity: {d} %", .{relative_humidity});
             }
             idf.vTaskDelay(2000 / idf.portTICK_PERIOD_MS);
         }
