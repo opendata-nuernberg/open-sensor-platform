@@ -3,7 +3,7 @@ import pty
 
 from invoke import task
 
-BUILD_PATH = os.path.join("firmware", "blink", "build")
+BUILD_PATH = os.path.join("firmware", "v0", "build")
 
 
 @task

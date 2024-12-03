@@ -5,3 +5,5 @@ build
 dependencies.lock
 !sdkconfig.defaults
 sdkconfig*
+
+.DS_Store
