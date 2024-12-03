@@ -80,17 +80,19 @@ export fn app_main() callconv(.C) void {
 // comptime function
 fn blinkLED(delay_ms: u32) !void {
     try idf.gpio.Direction.set(
-        .GPIO_NUM_18,
+        .GPIO_NUM_0,
         .GPIO_MODE_OUTPUT,
     );
     while (true) {
         log.info("LED: ON", .{});
-        try idf.gpio.Level.set(.GPIO_NUM_18, 1);
+        try idf.gpio.Level.set(.GPIO_NUM_0, 1);
 
         idf.vTaskDelay(delay_ms / idf.portTICK_PERIOD_MS);
 
         log.info("LED: OFF", .{});
-        try idf.gpio.Level.set(.GPIO_NUM_18, 0);
+        try idf.gpio.Level.set(.GPIO_NUM_0, 0);
+
+        idf.vTaskDelay(delay_ms / idf.portTICK_PERIOD_MS);
     }
 }
 
