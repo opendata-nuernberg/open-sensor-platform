@@ -15,14 +15,16 @@ pub fn build(b: *std.Build) !void {
         .optimize = optimize,
     });
 
-
     const zig_idf_dep = b.dependency("zig_idf", .{
         .target = target,
         .optimize = optimize,
     });
+
     lib.root_module.addImport("zig_idf", zig_idf_dep.module("zig_idf"));
 
     lib.linkLibC(); // stubs for libc
+
+    try zig_idf.includeDeps(b, lib);
 
     b.installArtifact(lib);
 }

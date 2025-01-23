@@ -9,14 +9,12 @@
     // internet connectivity.
     .dependencies = .{
         .zig_idf = .{
-            .url = "git+https://github.com/opendata-nuernberg/zig-idf.git#3b74af33f861de22d66da3430412703cd532b476",
-            .hash = "122002f834d6008d849915fa66114c246f5f3af02cba355e1e0043d423c08761377e",
+            .url = "git+https://github.com/opendata-nuernberg/zig-idf.git#66d7a323168973e8320ed0869acd4cc446552b6a",
+            .hash = "12201c7f1759e69d225590a89936cd0ff519e38f8830cc94fd672af1b15c994dd759",
             // To use the following path check out the zig-idf library repo
             // next to the sample, e.g.:
-            // ~/projects/zig-esp-idf-sample
-            // ~/projects/zig-idf
-            // .path = "../../zig-idf",
-        }
+            // .path = "../../../zig-idf",
+        },
         // See `zig fetch --save <url>` for a command-line interface for adding dependencies.
         //.example = .{
         //    // When updating this field to a new URL, be sure to delete the corresponding
