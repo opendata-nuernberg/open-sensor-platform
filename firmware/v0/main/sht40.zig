@@ -7,6 +7,10 @@ const DATA_LENGTH = 6;
 
 pub const Sht40Error = error{ WriteFailed, ReadFailed };
 
+const Command = struct {
+    const READ_T_RH_HIGH_PRECISION: [1:0]u8 = .{0xFD};
+};
+
 pub const Sht40 = struct {
     i2c_bus_handle: idf.sys.i2c_master_bus_handle_t,
     i2c_device_handle: idf.sys.i2c_master_dev_handle_t,
@@ -38,9 +42,7 @@ pub const Sht40 = struct {
     }
 
     pub fn read_temparature(self: *Sht40) Sht40Error!f32 {
-        const data_write: [1:0]u8 = .{0xFD};
-
-        const ret_w: idf.sys.esp_err_t = idf.sys.i2c_master_transmit(self.i2c_device_handle, &data_write, 1, 100);
+        const ret_w: idf.sys.esp_err_t = idf.sys.i2c_master_transmit(self.i2c_device_handle, &Command.READ_T_RH_HIGH_PRECISION, 1, 100);
         idf.vTaskDelay(1000 / idf.portTICK_PERIOD_MS);
 
         if (ret_w != idf.sys.esp_err_t.ESP_OK) {
