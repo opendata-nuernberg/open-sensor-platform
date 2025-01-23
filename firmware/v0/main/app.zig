@@ -114,7 +114,6 @@ export fn sht4x_task(_: ?*anyopaque) void {
 
     if (!sht40_sensor.probe()) {
         log.err("Device not found", .{});
-        return;
     }
 
     log.info("Device FOUND!", .{});

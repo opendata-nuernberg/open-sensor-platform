@@ -27,8 +27,8 @@ pub const Sht40 = struct {
         return .{
             .i2c_bus_handle = i2c_bus_handle,
             .i2c_device_handle = i2c_device_handle,
-            // .data = [_:0]u8{0} ** DATA_LENGTH,
-            .data = std.mem.zeroes([DATA_LENGTH:0]u8),
+            .data = [_:0]u8{7} ** DATA_LENGTH,
+            // .data = std.mem.zeroes([DATA_LENGTH:0]u8),
         };
     }
 
@@ -38,10 +38,10 @@ pub const Sht40 = struct {
 
     pub fn probe(self: Self) bool {
         const ret_probe = idf.sys.i2c_master_probe(self.i2c_bus_handle, 0x44, 1000);
-        return ret_probe != idf.sys.esp_err_t.ESP_OK;
+        return ret_probe == idf.sys.esp_err_t.ESP_OK;
     }
 
-    pub fn read_temparature(self: Self) Sht40Error!i32 {
+    pub fn read_temparature(self: Self) Sht40Error!f32 {
         // _ = self;
         // return 0.0;
         const data_write: [1:0]u8 = .{0xFD};
@@ -64,6 +64,6 @@ pub const Sht40 = struct {
 
         const st: u16 = (@as(u16, self.data[0]) << 8) | self.data[1];
         const temperature = (175 * (@as(f32, @floatFromInt(st)) / 65535)) - 45;
-        return @intFromFloat(temperature * 100);
+        return temperature;
     }
 };
