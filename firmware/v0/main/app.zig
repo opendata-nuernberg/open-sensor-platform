@@ -108,15 +108,15 @@ export fn sht4x_task(_: ?*anyopaque) void {
     var i2c_bus_handle: idf.sys.i2c_master_bus_handle_t = undefined;
     i2c.BUS.add(&i2cmb, &i2c_bus_handle) catch unreachable;
 
-    const sht40_sensor = try sht40.Sht40.init(i2c_bus_handle);
+    var sht40_sensor = try sht40.Sht40.init(i2c_bus_handle);
 
     log.info("Probing device sht4x", .{});
 
     if (!sht40_sensor.probe()) {
         log.err("Device not found", .{});
+    } else {
+        log.info("Device FOUND!", .{});
     }
-
-    log.info("Device FOUND!", .{});
 
     while (true) {
         if (sht40_sensor.read_temparature()) |temperature| {
