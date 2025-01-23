@@ -4,8 +4,9 @@ const builtin = @import("builtin");
 const idf = @import("zig_idf");
 const i2c = idf.i2c;
 
-const OnboardLed = @import("onboard_led.zig").OnboardLed;
+const sht40 = @import("sht40.zig");
 
+const OnboardLed = @import("onboard_led.zig").OnboardLed;
 const tag = "osp";
 
 export fn app_main() callconv(.C) void {
@@ -107,76 +108,28 @@ export fn sht4x_task(_: ?*anyopaque) void {
     var i2c_bus_handle: idf.sys.i2c_master_bus_handle_t = undefined;
     i2c.BUS.add(&i2cmb, &i2c_bus_handle) catch unreachable;
 
-    const i2c_device_sht4x_config: idf.sys.i2c_device_config_t = .{
-        .dev_addr_length = idf.sys.i2c_addr_bit_len_t.I2C_ADDR_BIT_LEN_7,
-        .device_address = 0x44,
-        .scl_speed_hz = 100_000,
-    };
-    var i2c_device_handle: idf.sys.i2c_master_dev_handle_t = undefined;
-    i2c.BUS.addDevice(i2c_bus_handle, &i2c_device_sht4x_config, &i2c_device_handle) catch unreachable;
-    defer i2c.BUS.removeDevice(i2c_device_handle) catch unreachable;
-
-    const DATA_LENGTH = 20;
-    var data = [_:0]u8{0} ** DATA_LENGTH;
-    //var data = std.mem.zeroes([DATA_LENGTH:0]u8);
-    //const data: [DATA_LENGTH:0]u8 = std.mem.zeroes([DATA_LENGTH:0]u8);
-
-    log.info("data is type {s}\n", .{@typeName(@TypeOf(data))});
-
-    const data_rd: [*:0]u8 = &data;
-    //const data_rd: [*:0]u8 = &data;
-
-    log.info("&data is type {s}\n", .{@typeName(@TypeOf(&data))});
-
-    //var buffer: [200]u8 = undefined;
-    //var fba = std.heap.FixedBufferAllocator.init(&buffer);
-    //const allocator = fba.allocator();
-    //const data_rd = allocator.alloc(u8, 20) catch unreachable;
-    //defer allocator.free(data_rd);
-
-    const ret_probe = idf.sys.i2c_master_probe(i2c_bus_handle, 0x44, 1000);
+    var sht40_sensor = try sht40.Sht40.init(i2c_bus_handle);
 
     log.info("Probing device sht4x", .{});
-    if (ret_probe != idf.sys.esp_err_t.ESP_OK) {
+
+    if (!sht40_sensor.probe()) {
         log.err("Device not found", .{});
     } else {
         log.info("Device FOUND!", .{});
+    }
 
-        while (true) {
-            idf.vTaskDelay(1000 / idf.portTICK_PERIOD_MS);
-
-            var data_write: [20:0]u8 = undefined;
-            data_write[0] = 0xFD;
-            //const data_write_ptr = @as([*:0]const u8, &data_write);
-            const ret_w: idf.sys.esp_err_t = idf.sys.i2c_master_transmit(i2c_device_handle, &data_write, 1, 100);
-            idf.vTaskDelay(1000 / idf.portTICK_PERIOD_MS);
-
-            if (ret_w != idf.sys.esp_err_t.ESP_OK) {
-                log.err("Error while writing to i2c: {x}", .{@intFromEnum(ret_w)});
-            } else {
-                log.info("Written value: {x}", .{data_rd});
-            }
-
-            idf.vTaskDelay(1000 / idf.portTICK_PERIOD_MS);
-
-            const ret: idf.sys.esp_err_t = idf.sys.i2c_master_receive(i2c_device_handle, data_rd, DATA_LENGTH, 100);
-
-            if (ret != idf.sys.esp_err_t.ESP_OK) {
-                log.err("Error while reading from i2c: {x}", .{@intFromEnum(ret)});
-            } else {
-                log.info("Read value: {x}", .{data_rd});
-
-                const st: u16 = (@as(u16, data[0]) << 8) | data[1];
-                const temperature = (175 * (@as(f32, @floatFromInt(st)) / 65535)) - 45;
-
-                log.info("Temperature: {d} °C", .{temperature});
-
-                //const srh: f32 = (@as(u16, data[3]) << 8) | data[4];
-                //const relative_humidity = (125 * (@as(f32, @floatFromInt(srh)) / 65535)) - 6;
-                //log.info("Rel. humidity: {d} %", .{relative_humidity});
-            }
-            idf.vTaskDelay(2000 / idf.portTICK_PERIOD_MS);
+    while (true) {
+        if (sht40_sensor.read_temparature()) |temperature| {
+            log.info("Temperature: {d} °C", .{temperature});
+        } else |err| switch (err) {
+            sht40.Sht40Error.WriteFailed => {
+                log.err("Write to sht40 i2c sensor failed!", .{});
+            },
+            sht40.Sht40Error.ReadFailed => {
+                log.err("Read from sht40 i2c sensor failed!", .{});
+            },
         }
+        idf.vTaskDelay(2000 / idf.portTICK_PERIOD_MS);
     }
 }
 
