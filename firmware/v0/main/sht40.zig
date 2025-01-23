@@ -20,7 +20,7 @@ pub const Sht40 = struct {
         const i2c_device_sht4x_config: idf.sys.i2c_device_config_t = .{
             .dev_addr_length = idf.sys.i2c_addr_bit_len_t.I2C_ADDR_BIT_LEN_7,
             .device_address = 0x44,
-            .scl_speed_hz = 100_000,
+            .scl_speed_hz = 400_000,
         };
 
         var i2c_device_handle: idf.sys.i2c_master_dev_handle_t = undefined;
@@ -43,14 +43,11 @@ pub const Sht40 = struct {
 
     pub fn read_temparature(self: *Sht40) Sht40Error!f32 {
         const ret_w: idf.sys.esp_err_t = idf.sys.i2c_master_transmit(self.i2c_device_handle, &Command.READ_T_RH_HIGH_PRECISION, 1, 100);
-        idf.vTaskDelay(1000 / idf.portTICK_PERIOD_MS);
+        idf.vTaskDelay(10 / idf.portTICK_PERIOD_MS);
 
         if (ret_w != idf.sys.esp_err_t.ESP_OK) {
-            // log.err("Error while writing to i2c: {x}", .{@intFromEnum(ret_w)});
             return Sht40Error.WriteFailed;
         }
-
-        idf.vTaskDelay(1000 / idf.portTICK_PERIOD_MS);
 
         const ret_r = idf.sys.i2c_master_receive(self.i2c_device_handle, &self.data, DATA_LENGTH, 100);
 
