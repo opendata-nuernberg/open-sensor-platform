@@ -58,4 +58,4 @@ WORKDIR /workspace
 
 ENTRYPOINT [ "/opt/esp/entrypoint.sh" ]
 
-CMD ["sleep", "infinity"]
+CMD ["/bin/bash", "-c"]
