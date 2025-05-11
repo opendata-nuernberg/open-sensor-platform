@@ -96,7 +96,7 @@ export fn blinkclock(_: ?*anyopaque) void {
 // override the std panic function with idf.panic
 pub const panic = idf.panic;
 const log = std.log.scoped(.@"zig-blink");
-pub const std_options = .{
+pub const std_options = std.Options{
     .log_level = switch (builtin.mode) {
         .Debug => .debug,
         else => .info,

@@ -35,7 +35,7 @@ RUN groupadd --gid $USER_GID $CONTAINER_USER \
   && adduser --uid $USER_UID --gid $USER_GID --disabled-password --gecos "" ${CONTAINER_USER} \
   && usermod -a -G root $CONTAINER_USER && usermod -a -G dialout $CONTAINER_USER
 
-RUN chmod -R 775 /opt/esp/python_env/
+RUN chmod -R 775 /opt/esp/ && chown -R ${USER_UID}:${USER_GID} /opt/esp/
 
 USER ${CONTAINER_USER}
 ENV USER=${CONTAINER_USER}
@@ -53,6 +53,8 @@ RUN zvm install --zls 0.14.0 && \
   zvm use 0.14.0
 
 RUN echo "source /opt/esp/idf/export.sh > /dev/null 2>&1" >> ~/.bashrc
+
+WORKDIR /workspace
 
 ENTRYPOINT [ "/opt/esp/entrypoint.sh" ]
 
