@@ -1,12 +1,8 @@
 {
 	"name": "ESP-IDF QEMU",
-	"build": {
-		"dockerfile": "Dockerfile"
-	},
-	"mounts": [
-		// Unfortunately this mount only works for linux users:
-		"source=/dev/bus/usb,target=/dev/bus/usb,type=bind,consistency=cached"
-	],
+	"dockerComposeFile": "../dev_docker/docker-compose.yml",
+	"service": "development",
+	"workspaceFolder": "/workspace",
 	"customizations": {
 		"vscode": {
 			"settings": {
@@ -37,8 +33,5 @@
 				"espressif.esp-idf-web"
 			]
 		}
-	},
-	"runArgs": [
-		"--privileged"
-	]
+	}
 }
