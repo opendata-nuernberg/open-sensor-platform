@@ -9,8 +9,8 @@
     // internet connectivity.
     .dependencies = .{
         .zig_idf = .{
-            .url = "git+https://github.com/opendata-nuernberg/zig-idf.git#66d7a323168973e8320ed0869acd4cc446552b6a",
-            .hash = "12201c7f1759e69d225590a89936cd0ff519e38f8830cc94fd672af1b15c994dd759",
+            .url = "git+https://github.com/opendata-nuernberg/zig-idf.git#771f5cdba3a3d79c32e852eab8703b7d2ed89b58",
+            .hash = "1220e62a39cee84e33ff27a9f5bb791a721fc58fe001b69a733c18779bd222b019ff",
             // To use the following path check out the zig-idf library repo
             // next to the sample, e.g.:
             // .path = "../../../zig-idf",

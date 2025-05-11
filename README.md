@@ -26,13 +26,13 @@ If you are not using VS Code or just want to compile from the commandline you ca
 ```
 cd dev_docker
 docker compose run development -- /bin/bash
-make prepare # This prepares the build environment
+make prepare # This prepares the build environment only needs to be run once!
 make # This runs the default build_firmware command
 ```
 The current Dev Container setup does not support flashing the board.
 To flash the board open a different terminal (not running in the container) and type:
 ```
-make flash_firmware
+make flash_monitor
 ```
 
 ### tio

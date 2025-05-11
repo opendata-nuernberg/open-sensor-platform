@@ -1,12 +1,14 @@
 .DEFAULT_GOAL := build_firmware
 
-ROOT_PATH=firmware/blink
+ROOT_PATH=firmware/v0
 BUILD_PATH=${ROOT_PATH}/build
 BOOTLOADER_PATH=${BUILD_PATH}/bootloader/bootloader.bin
 PARTITION_TABLE_PATH=${BUILD_PATH}/partition_table/partition-table.bin
-FIRMWARE_PATH=${BUILD_PATH}/zig-sample-idf.bin
+FIRMWARE_PATH=${BUILD_PATH}/firmware.bin
 
 all: build_firmware flash_firmware monitor
+
+flash_monitor: flash_firmware monitor
 
 prepare:
 	@echo "Preparing environment"
